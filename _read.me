@@ -1,0 +1,131 @@
+################################################################################################
+#####################|------------------------------------------------|#########################
+#####################|                                                |#########################
+#####################|     InDesign script grSciColl_GBIF_IDs.jsx     |#########################
+#####################|                                                |#########################
+#####################|                      — v1.0 —                  |#########################
+#####################|                                                |#########################
+#####################|------------------------------------------------|#########################
+################################################################################################
+
+Script written by Emmanuel Côtez (emmanuel.cotez@mnhn.fr, emmanuel.cotez@teznet.fr);
+Last update on 31/10/2025 (Halloween update);
+Work with InDesign CC 2025 and previous versions (not tested but should work!).
+
+################################################################################################
+Short description ##############################################################################
+################################################################################################
+
+– This script is an InDesign script that can be used to retrieve the URL of an institution or collection acronyms (e.g., "P", "BM", "CAY") cited in a text from the GBIF API.
+– It works either with an "abbreviations" paragraph style and a template to follow or simply on the selected acronym.
+– The script can also be used to retrieve the name of an institution or collection from his acronym (e.g. "Paris Herbarium" from "P").
+
+################################################################################################
+Installation and dependencies ##################################################################
+################################################################################################
+
+– Copy the script file "grSciColl_GBIF_IDs.jsx" into the script folder of InDesign;
+– Copy the folder "extendables" in the same folder than the script (should be unziped first);
+– Copy the file "restix.jsx" in the same folder than the script;
+– Copy the file "functionsEc.js" in the same folder than the script.
+
+Then, you should have a folder, named for your convenience,  that contains:
+/extendables
+functionsEc.js
+restix.jsx
+grSciColl_GBIF_IDs.jsx
+
+################################################################################################
+Configuration ##################################################################################
+################################################################################################
+
+– The script works with an "Abréviations" paragraph style; 
+– If no selection is done by user before launching the script, the "Abréviations" paragraph style should exist or the script will stop with an error message;
+– The "Abréviations" paragraph style name can be configured in the script;
+– The "Lien hypertexte" character style is automatically created;
+– The "Lien hypertexte" character style name can be configured in the script.
+
+################################################################################################
+How the script works ###########################################################################
+################################################################################################
+
+**********************************************************
+*** If no active selection was detected by the script: ***
+**********************************************************
+
+1°/ The scripts looks for "Abréviations" paragraph style; 
+2°/ In this paragraph style, the script searches the pattern:
+
+	[ACRONYM]	[Tabulation]	Institution or Collection name;
+
+	P	Paris Herbarium;
+
+3°/ The script selects each found acronym and tries to get via the GBIF API:
+
+* the "Institution ID" corresponding to the treated acronym:
+– if the institution ID is found, the script asks for user confirmation, showing the name of the found institution ID;
+– if more than 1 institution ID is found, the script asks to the user to choose the correct ID in a list.
+
+if no institution acronym is found (or the found IDs were invalidated by user), the script tries to get:
+* the "Collection ID" corresponding to the treated acronym:
+– if the collection ID is found, the script asks for user confirmation, showing the name of the found collection ID;
+– if more than 1 collection ID is found, the script asks for user confirmation, that should choose in a list the correct ID.
+
+4°/ If an institution or collection ID is found, the script:
+* gets the corresponding UUID;
+* builds the corresponding URL;
+* creates and adds an InDesign hyperlink to the acronym in the text.
+
+5°/ If no institution or collection ID is found, the script:
+* highlights in orange the corresponding acronym.
+
+*************************************************************************************************************
+*** If an active selection is detected (so, an institution or collection acronym is selected, e.g., "P"): ***
+*************************************************************************************************************
+
+1°/ The script takes in paramater the selected acronym and tries to get via the GBIF API:
+* the "Institution ID" corresponding to the selected acronym:
+– if the institution ID is found, the script asks for user confirmation, showing the name of the found institution ID;
+– if more than 1 institution ID is found, the script asks to the user to choose the correct ID in a list.
+
+if no institution acronym is found (or the found IDs were invalidated by user), the script tries to get:
+* the "Collection ID" corresponding to the selected acronym:
+– if the collection ID is found, the script asks for user confirmation, showing the name of the found collection ID;
+– if more than 1 collection ID is found, the script asks for user confirmation, that should choose in a list the correct ID.
+
+************************************************************
+*** Retrieving the name of an institution of collection: ***
+************************************************************
+
+When the script is used on an active selection (an acronym is selected in the InDesign document), the script works as described upon and, in addition, copy the name of the corresponding acronym in the clipboard, so the user can then paste the corresponding name in a ist prepared in advance.
+
+Example:
+
+In the text of the InDesign document, we can find the following list:
+
+P
+BM
+CAY
+
+If the user selects "P" and launches the script, it will:
+
+– add the found link to the selected acronym, so on "P" in the upon list;
+– copy the corresponding name, so "Paris Herbarium" in the clipboard.
+
+So the user can then paste the content the clipboard next to the acronym itself:
+
+P	Paris Herbarium;
+BM
+CAY
+
+(tabulation and semicolon are not added by the script, the clipboard contains only the name).
+
+################################################################################################
+Additional remarks #############################################################################
+################################################################################################
+
+– Added hyperlinks are styled with a character style named "Lien hypertexte"; you can configure the style name in the script itself;
+– If nothing is selected, the script searches for an "Abréviations" paragraph name; you can configure the style name in the script itself; if the paragraph style is not found in the document, the script stops;
+– Hyperlink character style and colors used in the script are automaticaly created;
+– Before adding a link on the acronym, the script forces the deletion of an existing link on it;
+– If the script cannot add the found hyperlink, it applies the "error" color on the corresponding acronym.
